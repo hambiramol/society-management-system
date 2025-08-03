@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style-dashboard.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <h2>User Dashboard</h2>
+
+  <div class="card" id="userInfo"></div>
+  <div class="card" id="transactions"></div>
+
+  <h3>Pay Dues</h3>
+  <button onclick="payNow()">Pay via UPI / Card</button>
+
+  <script>
+    const room = localStorage.getItem("loggedRoom");
+    const members = JSON.parse(localStorage.getItem("members") || "[]");
+    const user = members.find(m => m.room === room);
+
+    if (!user) {
+      document.body.innerHTML = "User not found";
+      throw new Error("No user");
+    }
+
+    document.getElementById("userInfo").innerHTML = `
+      <strong>Name:</strong> ${user.name}<br>
+      <strong>Room:</strong> ${user.room}<br>
+      <strong>Balance Due:</strong> ₹${user.balance.toFixed(2)}<br>
+    `;
+
+    const txn = user.payments.map(p => `<li>Paid ₹${p.amount} on ${p.date}</li>`).join('');
+    document.getElementById("transactions").innerHTML = `
+      <h3>Payment History</h3>
+      <ul>${txn || 'No Payments'}</ul>
+    `;
+
+    async function payNow() {
+      const amount = parseFloat(prompt("Enter amount to pay"));
+      if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
+
+      user.balance -= amount;
+      const paymentDate = new Date().toLocaleString();
+      user.payments.push({ amount, date: paymentDate });
+
+      localStorage.setItem("members", JSON.stringify(members));
+
+      await generatePDFReceipt(user.name, user.room, amount, paymentDate, user.balance.toFixed(2));
+      alert("Payment successful. Receipt downloaded.");
+
+      setTimeout(() => location.reload(), 1000);
+    }
+
+    async function generatePDFReceipt(name, room, amount, date, balance) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(16);
+      doc.text("Society Maintenance Receipt", 60, 20);
+
+      doc.setFontSize(12);
+      let y = 40;
+      doc.text(`Name: ${name}`, 20, y);
+      doc.text(`Room No: ${room}`, 20, y + 10);
+      doc.text(`Payment Amount: ₹${amount}`, 20, y + 20);
+      doc.text(`Date of Payment: ${date}`, 20, y + 30);
+      doc.text(`Balance Due After Payment: ₹${balance}`, 20, y + 40);
+      doc.line(20, y + 45, 190, y + 45);
+
+      // Load images
+      const stampImg = await loadImageAsBase64('stamp.png');
+      const signImg = await loadImageAsBase64('signature.png');
+
+      if (stampImg) doc.addImage(stampImg, 'PNG', 140, y + 55, 40, 40);
+      if (signImg) {
+        doc.addImage(signImg, 'PNG', 20, y + 55, 50, 20);
+        doc.text("Treasurer", 25, y + 80);
+      }
+
+      doc.save(`Receipt_${room}_${Date.now()}.pdf`);
+    }
+
+    function loadImageAsBase64(url) {
+      return fetch(url)
+        .then(response => response.blob())
+        .then(blob => new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        }))
+        .catch(() => null);
+    }
+  </script>
+</body>
+</html>

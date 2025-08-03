@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify OTP</title>
+</head>
+<body>
+  <h2>Enter OTP</h2>
+  <input id="userOtp" placeholder="Enter OTP">
+  <button onclick="verifyOTP()">Verify</button>
+
+  <script>
+    function verifyOTP() {
+      const entered = document.getElementById("userOtp").value;
+      const otp = localStorage.getItem("otp");
+
+      if (entered === otp) {
+        alert("Login successful");
+        window.location.href = "dashboard.html";
+      } else {
+        alert("Invalid OTP");
+      }
+    }
+  </script>
+</body>
+</html>

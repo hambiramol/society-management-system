@@ -1,0 +1,90 @@
+/* Reset and Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f3f6f9;
+  padding: 20px;
+  color: #333;
+}
+
+/* Page Title */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0a3d62;
+}
+
+/* Info Card */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* User Info Section */
+#userInfo {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Transactions */
+#transactions {
+  margin-top: 20px;
+}
+
+#transactions ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+#transactions li {
+  padding: 10px;
+  background: #e7f1ff;
+  margin-bottom: 8px;
+  border-left: 4px solid #007bff;
+  border-radius: 6px;
+}
+
+/* Payment Section */
+h3 {
+  margin-bottom: 10px;
+  color: #1e3799;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 15px;
+  background-color: #0984e3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0652dd;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  button {
+    width: 100%;
+  }
+}

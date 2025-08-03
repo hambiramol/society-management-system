@@ -1,0 +1,106 @@
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 20px;
+      background: #f9f9f9;
+      /* padding: 20px; */
+    }
+
+    h1 {
+    text-align: center;
+    color: #333;
+    }
+
+    h2, h3 {
+      color: #2c3e50;
+    }
+
+    input {
+      margin: 5px;
+      padding: 10px;
+      font-size: 15px;
+      /* width: 200px; */
+    }
+
+    button {
+  padding: 10px 15px;
+  margin: 5px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+    .card {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+    .tab-btns {
+      margin-top: 20px;
+    }
+
+    .tab-btns button {
+      padding: 10px 20px;
+      border: none;
+      background: #3498db;
+      color: white;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+
+    .tab-btns button.active {
+      background: #2c3e50;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+      margin-top: 10px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: left;
+    }
+
+    th {
+      background: #f2f2f2;
+    }
+
+    button:hover {
+  background-color: #004999;
+}
+
+.member {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.receipt {
+  background: #eef;
+  padding: 5px;
+  margin-top: 5px;
+  font-size: 14px;
+}
+  
