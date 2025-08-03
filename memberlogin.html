@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+</head>
+<body>
+  <h2>Member Login</h2>
+  <input id="roomNo" placeholder="Enter Room Number">
+  <button onclick="sendOTP()">Send OTP</button>
+
+  <script>
+    function sendOTP() {
+      const room = document.getElementById('roomNo').value;
+      const members = JSON.parse(localStorage.getItem("members") || "[]");
+      const user = members.find(m => m.room === room);
+
+      if (!user) return alert("No member found.");
+
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      localStorage.setItem("otp", otp);
+      localStorage.setItem("loggedRoom", room);
+
+      alert(`OTP sent to ${user.mobile} / ${user.email}: ${otp}`);
+      window.location.href = "verify.html";
+    }
+  </script>
+</body>
+</html>
