@@ -1,0 +1,6 @@
+{
+  "routes": {
+    "/paymentsuccess.html": "paymentsuccess.html",
+    "/paymentfailure.html": "paymentfailure.html"
+  }
+}
