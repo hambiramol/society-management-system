@@ -14,6 +14,21 @@
   <h3>Pay Dues</h3>
   <button onclick="payNow()">Pay via UPI / Card</button>
 
+  <form id="payuForm" method="post" action="https://test.payu.in/_payment" style="display:none;">
+    <!-- <input type="text" name="key" id="payuKey"> -->
+  <input type="hidden" name="key" id="payuKey">
+  <input type="hidden" name="txnid" id="payuTxnId">
+  <input type="hidden" name="amount" id="payuAmount">
+  <input type="hidden" name="productinfo" id="payuProductInfo">
+  <input type="hidden" name="firstname" id="payuFirstName">
+  <input type="hidden" name="email" id="payuEmail">
+  <input type="hidden" name="phone" id="payuPhone">
+  <input type="hidden" name="surl" id="payuSurl">
+  <input type="hidden" name="furl" id="payuFurl">
+  <input type="hidden" name="hash" id="payuHash">
+</form>
+
+
   <script>
     const room = localStorage.getItem("loggedRoom");
     const members = JSON.parse(localStorage.getItem("members") || "[]");
@@ -36,21 +51,54 @@
       <ul>${txn || 'No Payments'}</ul>
     `;
 
-    async function payNow() {
-      const amount = parseFloat(prompt("Enter amount to pay"));
-      if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
+    // async function payNow() {
+    //   const amount = parseFloat(prompt("Enter amount to pay"));
+    //   if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
 
-      user.balance -= amount;
-      const paymentDate = new Date().toLocaleString();
-      user.payments.push({ amount, date: paymentDate });
+    //   user.balance -= amount;
+    //   const paymentDate = new Date().toLocaleString();
+    //   user.payments.push({ amount, date: paymentDate });
 
-      localStorage.setItem("members", JSON.stringify(members));
+    //   localStorage.setItem("members", JSON.stringify(members));
 
-      await generatePDFReceipt(user.name, user.room, amount, paymentDate, user.balance.toFixed(2));
-      alert("Payment successful. Receipt downloaded.");
+    //   await generatePDFReceipt(user.name, user.room, amount, paymentDate, user.balance.toFixed(2));
+    //   alert("Payment successful. Receipt downloaded.");
 
-      setTimeout(() => location.reload(), 1000);
-    }
+    //   setTimeout(() => location.reload(), 1000);
+    // }
+
+async function payNow() {
+  const amount = parseFloat(prompt("Enter amount to pay"));
+  if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount.");
+
+  const txnid = "Txn" + Date.now();
+  const productinfo = "Society Subscription";
+  const firstname = user.name;
+  const email = user.email || "test@example.com";
+  const phone = user.mobile || "9999999999";
+  const key = "RDkH7R"; // REPLACE THIS
+  const salt = "R65DnaGeHBB9Uf5EXrvSOIXIXwBOYTdC"; // DO NOT use on client in real apps!
+
+  // For testing ONLY: hash = sha512(key|txnid|amount|productinfo|firstname|email|||||||||||salt)
+  const hashString = `${key}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${salt}`;
+  const hash = await sha512(hashString); // Simulate backend hashing
+
+  // Fill form
+  document.getElementById("payuKey").value = key;
+  document.getElementById("payuTxnId").value = txnid;
+  document.getElementById("payuAmount").value = amount;
+  document.getElementById("payuProductInfo").value = productinfo;
+  document.getElementById("payuFirstName").value = firstname;
+  document.getElementById("payuEmail").value = email;
+  document.getElementById("payuPhone").value = phone;
+  document.getElementById("payuSurl").value = "https://society-management-system-3c56.onrender.com/payment-success.html";
+  document.getElementById("payuFurl").value = "https://society-management-system-3c56.onrender.com/payment-failure.html";
+  document.getElementById("payuHash").value = hash;
+
+  // Submit form to PayU
+  document.getElementById("payuForm").submit();
+}
+
 
     async function generatePDFReceipt(name, room, amount, date, balance) {
       const { jsPDF } = window.jspdf;
@@ -91,6 +139,14 @@
         }))
         .catch(() => null);
     }
+
+    async function sha512(str) {
+      const msgBuffer = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
   </script>
 </body>
 </html>
